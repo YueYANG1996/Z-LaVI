@@ -59,9 +59,9 @@ def load_test_data(dataset):
                          "{} object .", "This is a {} object .", "The object is of color {} ."]
             
             # the content of the prompts is the same, just different formats for different models
-            prompts_2 = ["{} can be of color ", "{} has color ",
-                         "The color of {} can be ", "The color of the {} is ",
-                         "{} is ", "This {} is ", "{} is of color "]
+            prompts_2 = ["{} can be of color", "{} has color",
+                         "The color of {} can be", "The color of the {} is",
+                         "{} is", "This {} is", "{} is of color"]
 
             candidates = ['black', 'blue', 'brown', 'gray', 'green', 'orange', 'pink', 'purple', 'red', 'silver', 'white', 'yellow']
     
@@ -70,9 +70,9 @@ def load_test_data(dataset):
                          "The object is made from {} .", "The object can be made from {} .",
                          "{} object .", "This is a {} object .", "{} is used to make the object ."]
             
-            prompts_2 = ["{} is made of ", "{} can be made of ", 
-                         "{} is made from ", "{} can be made from ",
-                         "{} is ", "This {} is ", "{} is made by using "]
+            prompts_2 = ["{} is made of", "{} can be made of", 
+                         "{} is made from", "{} can be made from",
+                         "{} is", "This {} is", "{} is made by using"]
 
             candidates = ['bronze', 'ceramic', 'cloth', 'concrete', 'cotton', 'denim', 'glass', 'gold', 'iron', 'jade', 'leather', 'metal', 'paper', 'plastic', 'rubber', 'stone', 'tin', 'wood']
 
@@ -81,9 +81,9 @@ def load_test_data(dataset):
                          "The object is of shape {} .", "The shape of the object can be {} .",
                          "The shape of the object is {} .", "{} .", "This is {} ."]
             
-            prompts_2 = ["{} can be shape of ", "{} has shape of ",
-                         "{} is of shape ", "The shape of {} can be ",
-                         "The shape of the {} is ", "{} is ", "This {} is "]
+            prompts_2 = ["{} can be shape of", "{} has shape of",
+                         "{} is of shape", "The shape of {} can be",
+                         "The shape of the {} is", "{} is", "This {} is"]
             
             candidates = ['cross', 'heart', 'octagon', 'oval', 'polygon', 'rectangle', 'rhombus', 'round', 'semicircle', 'square', 'star', 'triangle']
 

@@ -80,7 +80,6 @@ def sciq(tokenizer, model, test_data):
         question = "Question: " + data['question']
         scores = []
         start_loc = get_start_loc(tokenizer, question + " The answer is ")
-
         for choice in ['distractor1', 'distractor2', 'distractor3', 'correct_answer']:
             option = "The answer is {}.".format(data[choice])
             prompt = question + " " + option
@@ -168,10 +167,10 @@ def vicomte(tokenizer, model, test_data):
 
     for prompt in prompts:
         for data in tqdm(test_data):
-            start_loc = get_start_loc(tokenizer, prompt.format(data[0]))
+            start_loc = get_start_loc(tokenizer, prompt.format(data[0])) + 1
             pred_scores = []
             for candidiate in candidates:
-                sent = prompt.format(data[0]) + "{}.".format(candidiate)
+                sent = prompt.format(data[0]) + " {}.".format(candidiate)
                 inputs = tokenizer(sent, return_tensors="pt").to("cuda:0")
                 labels = copy.deepcopy(inputs["input_ids"])
                 labels[0, :start_loc] = -100
@@ -218,7 +217,7 @@ if __name__ == "__main__":
     prediction_scores = get_prediction_scores(dataset, model_name)
 
     # save scores for ensemble
-    # pickle.dump(prediction_scores, open("../output/{}/{}.p".format(dataset, model_name), "wb"))
+    pickle.dump(prediction_scores, open("../output/{}/{}.p".format(dataset, model_name), "wb"))
 
     # evaluate
     print("Dataset: {}\nModel: {}\nPerformance:".format(dataset, model_name))
