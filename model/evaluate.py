@@ -1,3 +1,5 @@
+import sys
+import pickle
 import numpy as np
 from scipy import stats
 from dataloader import load_test_data
@@ -70,3 +72,13 @@ def eval(dataset, scores):
         print("Average Prompt:")
         print("Accuracy@1:", round((correct / len(test_data)) * 100, 1))
         print("Avg Spears:", round(np.mean(spears) * 100, 1), "std:", round(np.std(spears) * 100, 1))
+
+if __name__ == "__main__":
+    dataset, model_name = sys.argv[1:]
+
+    try:
+        scores = pickle.load(open("../output/{}/{}.p".format(dataset, model_name), "rb"))
+        print("Dataset: {}\nModel: {}\nPerformance:".format(dataset, model_name))
+        eval(dataset, scores)
+    except:
+        print("Output file not exist!")
