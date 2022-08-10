@@ -52,7 +52,7 @@ def eval(dataset, scores):
             f1.append(round(f1_score(labels, predictions, average='macro') * 100, 1))
             accuracy.append(round(accuracy_score(labels, predictions) * 100, 1))
             print(word, "F1:", f1[-1], accuracy[-1])
-
+        print("---------------------")
         print("Avg. F1: ", round(np.mean(f1), 1))
         print("Avg. Accuracy: ", round(np.mean(accuracy), 1))
 

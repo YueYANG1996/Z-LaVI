@@ -96,7 +96,7 @@ def situation(model, test_data):
     return id2scores
 
 def wsd(model, test_data):
-    _, word2senses, coarse_wsd, _ = test_data
+    word2senses, _, coarse_wsd, _ = test_data
     word2scores = {}
     for word in tqdm(word2senses):
         ind2sense = word2senses[word]
