@@ -28,17 +28,31 @@ def get_text_embeddings(sentences):
     encoded_text /= encoded_text.norm(dim=-1, keepdim=True)
     return encoded_text
 
-def arc_qasc(model, test_data):
-    '''ARC-Easy & ARC-Challenge & QASC'''
-    # id2scores = {}
-    # for i, data in tqdm(enumerate(test_data)):
-    #     question = data['question']['stem']
-    #     choices = [choice['text'] for choice in data['question']['choices']]
-    #     question_embedding = model.encode(question)
-    #     option_embedding = pickle.load()
-    #     scores = util.cos_sim(question_embedding, option_embedding)[0].tolist()
-    #     id2scores[i] = scores
-    # return id2scores
+def qasc(test_data, imagine_type):
+    id2scores = {}
+    for i, data in tqdm(enumerate(test_data)):
+        question = data['question']['stem']
+        question_embedding = get_text_embeddings([question])
+        scores = []
+        for choice in data['question']['choices']:
+            option = choice['text'].lower()
+            option_embedding = pickle.load(open("../image_features/{}/qasc/{}.p".format(imagine_type, option.replace("/", "-")), "rb")).to(device)
+            scores.append(float(th.mean(question_embedding @ option_embedding.T)))
+        id2scores[i] = scores
+    return id2scores
+
+def arc(test_data, imagine_type, dataset):
+    id2scores = {}
+    for i, data in tqdm(enumerate(test_data)):
+        question = data['question']['stem']
+        question_embedding = get_text_embeddings([question])
+        scores = []
+        for choice in data['question']['choices']:
+            option = choice['text']
+            option_embedding = pickle.load(open("../image_features/{}/{}/{}.p".format(imagine_type, dataset, option.replace("/", "-")), "rb")).to(device)
+            scores.append(float(th.mean(question_embedding @ option_embedding.T)))
+        id2scores[i] = scores
+    return id2scores
 
 def sciq():
     pass
@@ -87,9 +101,12 @@ def vicomte(test_data, imagine_type):
 def get_prediction_scores(dataset, imagine_type):
     test_data = load_test_data(dataset)
 
-    if "arc" in dataset or dataset == "qasc":
-        scores = arc_qasc(model, test_data)
+    if dataset == "qasc":
+        scores = qasc(test_data, imagine_type)
     
+    elif "arc" in dataset:
+        scores = arc(test_data, imagine_type, dataset)
+
     elif dataset == "sciq":
         scores = sciq(model, test_data)
     

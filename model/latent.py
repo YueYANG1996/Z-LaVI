@@ -11,8 +11,8 @@ from dataloader import load_test_data
 from evaluate import eval
 import os
 os.environ['TRANSFORMERS_CACHE'] = cache_folder
-from sentence_transformers import SentenceTransformer, util
 from simcse import SimCSE
+from sentence_transformers import SentenceTransformer, util
 from progress.bar import Bar
 
 def init_model(model_name):
