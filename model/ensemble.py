@@ -19,11 +19,19 @@ def wsd(model1, model2, weight):
         word2scores[word] = instance2scores
     return word2scores
 
-def get_ensemble_scores(dataset, model1_name, model2_name, weight):
-    
+def qa(model1, model2, weight):
+    ind2scores = {}
+    for ind in model1:
+        model1_score = softmax(model1[ind])
+        model2_score = softmax(model2[ind])
+        combined_score = weight * model1_score + (1 - weight) * model2_score
+        ind2scores[ind] = combined_score
+    return ind2scores
 
+def get_ensemble_scores(dataset, model1, model2, weight):
+    
     if "arc" in dataset or dataset == "qasc":
-        pass
+        ensemble_scores = qa(model1, model2, weight)
     
     elif dataset == "sciq":
         pass
