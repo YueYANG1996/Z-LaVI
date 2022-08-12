@@ -54,11 +54,30 @@ def arc(test_data, imagine_type, dataset):
         id2scores[i] = scores
     return id2scores
 
-def sciq():
-    pass
+def sciq(test_data, imagine_type):
+    id2scores = {}
+    for i, data in tqdm(enumerate(test_data)):
+        question = data['question']
+        question_embedding = get_text_embeddings([question])
+        scores = []
+        for choice in ['distractor1', 'distractor2', 'distractor3', 'correct_answer']:
+            option = data[choice]
+            option_embedding = pickle.load(open("../image_features/{}/sciq/{}.p".format(imagine_type, option.replace("/", "_")), "rb")).to(device)
+            scores.append(float(th.mean(question_embedding @ option_embedding.T)))
+        id2scores[i] = scores
+    return id2scores
 
-def ag_news():
-    pass
+def ag_news(test_data, imagine_type):
+    news_types = ["world news", "sports news", "business news", "tech news"]
+    prompt = "A news image of {}."
+    choices = [prompt.format(news_type) for news_type in news_types]
+    option_embedding = get_text_embeddings(choices)
+    id2scores = {}
+    for ind in tqdm(list(test_data.keys())):
+        question_embedding = pickle.load(open("../image_features/{}/ag_news/{}.p".format(imagine_type, ind), "rb")).to(device)
+        scores = th.mean(question_embedding @ option_embedding.T, dim=0).tolist()
+        id2scores[ind] = scores
+    return id2scores
 
 def situation(test_data, imagine_type):
     situation_types = []
@@ -96,7 +115,17 @@ def wsd(test_data, imagine_type):
     return word2scores
 
 def vicomte(test_data, imagine_type):
-    pass
+    test_data, _, prompts, _, candidates = test_data
+    word2scores = {data[0]: [] for data in test_data}
+
+    for prompt in prompts:
+        for data in tqdm(test_data):
+            candidate_embeddings = get_text_embeddings([prompt.format(candidate) for candidate in candidates])
+            target_embedding = pickle.load(open("../image_features/{}/vicomte/{}.p".format(imagine_type, data[0].replace("/", "_")), "rb")).to(device)
+            pred_scores = th.mean(target_embedding @ candidate_embeddings.T, dim=0).tolist()
+            word2scores[data[0]].append(pred_scores)
+
+    return word2scores
 
 def get_prediction_scores(dataset, imagine_type):
     test_data = load_test_data(dataset)
@@ -108,10 +137,10 @@ def get_prediction_scores(dataset, imagine_type):
         scores = arc(test_data, imagine_type, dataset)
 
     elif dataset == "sciq":
-        scores = sciq(model, test_data)
+        scores = sciq(test_data, imagine_type)
     
     elif dataset == "ag_news":
-        scores = ag_news(model, test_data)
+        scores = ag_news(test_data, imagine_type)
 
     elif dataset == "situation":
         scores = situation(test_data, imagine_type)
@@ -120,7 +149,7 @@ def get_prediction_scores(dataset, imagine_type):
         scores = wsd(test_data, imagine_type)
     
     elif "vicomte" in dataset:
-        scores = vicomte(model, test_data)
+        scores = vicomte(test_data, imagine_type)
     
     else:
         print("Error: dataset not supported!!!\nSupported datasets: [arc_easy, arc_challenge, qasc, sciq, ag_news, situation]")

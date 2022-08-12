@@ -16,7 +16,7 @@ pip install -r requirements.txt
 * `/scripts` some useful scripts.
 
 ## Get single model performace
-First, you need to get the performance of all language models and clip. We have three categories of language models: prompt-based, latent-embedding-based, NLI-based and we evaluate on 7 datasets. 
+First, you need to get the performance of all language models and clip. We have three categories of language models: prompt-based, latent-embedding-based, NLI-based and we evaluate on 8 datasets. 
 
 * Models:
   * Prompt-based: gpt-neo-1.3B, gpt-neo-2.7B, gpt-j-6B, opt-30b
