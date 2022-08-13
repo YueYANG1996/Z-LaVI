@@ -62,7 +62,10 @@ def eval(dataset, scores):
         correct = 0
         for data in test_data:
             true_scores = dist_data[data[0]]
-            mean_scores = np.mean(scores[data[0]], axis=0)
+            if len(np.array(scores[data[0]]).shape) == 1:
+                mean_scores = scores[data[0]]
+            else:
+                mean_scores = np.mean(scores[data[0]], axis=0)
             pred = candidates[np.argmax(mean_scores)]
             spears.append(stats.spearmanr(true_scores, mean_scores)[0])
 

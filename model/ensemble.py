@@ -1,5 +1,6 @@
 import sys
 import pickle
+import numpy as np
 from scipy.special import softmax
 from dataloader import load_test_data
 from evaluate import eval
@@ -19,7 +20,7 @@ def wsd(model1, model2, weight):
         word2scores[word] = instance2scores
     return word2scores
 
-def qa(model1, model2, weight):
+def general_ensemble(model1, model2, weight):
     ind2scores = {}
     for ind in model1:
         model1_score = softmax(model1[ind])
@@ -28,28 +29,24 @@ def qa(model1, model2, weight):
         ind2scores[ind] = combined_score
     return ind2scores
 
+def vicomte_ensemble(word2scores1, word2scores2, weight):
+    word2combine_scores = {}
+    for word, scores1 in word2scores1.items():
+        scores2 = word2scores2[word]
+        combine_scores = weight * softmax(np.mean(scores1, axis=0)) + (1 - weight) * softmax(np.mean(scores2, axis=0))
+        word2combine_scores[word] = combine_scores
+    return word2combine_scores
+
 def get_ensemble_scores(dataset, model1, model2, weight):
     
-    if "arc" in dataset or dataset == "qasc":
-        ensemble_scores = qa(model1, model2, weight)
-    
-    elif dataset == "sciq":
-        pass
-    
-    elif dataset == "ag_news":
-        pass
-
-    elif dataset == "situation":
-        pass
-    
-    elif dataset == "coarse_wsd":
+    if dataset == "coarse_wsd":
         ensemble_scores = wsd(model1, model2, weight)
     
     elif "vicomte" in dataset:
-        pass
-    
+        ensemble_scores = vicomte_ensemble(model1, model2, weight)
+
     else:
-        print("Error: dataset not supported!!!\nSupported datasets: [arc_easy, arc_challenge, qasc, sciq, ag_news, situation]")
+        ensemble_scores = general_ensemble(model1, model2, weight)
 
     return ensemble_scores
 

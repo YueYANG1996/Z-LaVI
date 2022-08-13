@@ -103,8 +103,6 @@ def ag_news(tokenizer, model, test_data):
         sentence = test_data[ind]['sentence']
         question = title + sentence
         scores = []
-        start_loc = get_start_loc(question + " This example is ")
-
         for option in choices:
             inputs = tokenizer(question, option, return_tensors="pt", truncation="only_first", max_length=512).to("cuda:0")
             labels = copy.deepcopy(inputs["input_ids"])
@@ -147,7 +145,7 @@ def situation(tokenizer, model, test_data):
     for ind in tqdm(list(test_data.keys())):
         question = test_data[ind]['sent']
         scores = []
-        start_loc = get_start_loc(question + " This example is ")
+        start_loc = get_start_loc(tokenizer, question + " This example is ")
 
         for option in choices:
             inputs = tokenizer(question, option, return_tensors="pt", truncation="only_first", max_length=512).to("cuda:0")

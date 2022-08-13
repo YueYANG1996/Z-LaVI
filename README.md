@@ -54,7 +54,7 @@ python nli.py dataset model
 replace the `dataset` and `model` with the exact name.
 
 ### CLIP
-To run the clip model, you first need to download the image embeddings: xxx. After unzip it in the `/Z-LaVI` folder, then you can run:
+To run the clip model, you first need to download the image embeddings [here](). After unzip it in the `/Z-LaVI` folder, then you can run:
 
 ```
 python clip_zs.py dataset imagine_type
@@ -105,4 +105,3 @@ images = main(prompt, number_of_images)
 for i, image in enumerate(images):
     image.save("apple_{}.jpg".format(i))
 ```
-
